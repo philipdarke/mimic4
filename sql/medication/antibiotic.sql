@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.antibiotic; CREATE TABLE mimiciv_derived.antibiotic AS
+DROP TABLE IF EXISTS derived.antibiotic; CREATE TABLE derived.antibiotic AS
 WITH abx AS (
   SELECT DISTINCT
     drug,
@@ -315,7 +315,7 @@ WITH abx AS (
       THEN 1
       ELSE 0
     END AS antibiotic
-  FROM mimiciv_hosp.prescriptions
+  FROM hosp.prescriptions
   WHERE
     NOT drug_type IN ('BASE')
     AND NOT route IN ('OU', 'OS', 'OD', 'AU', 'AS', 'AD', 'TP')
@@ -334,10 +334,10 @@ SELECT
   pr.route,
   pr.starttime,
   pr.stoptime
-FROM mimiciv_hosp.prescriptions AS pr
+FROM hosp.prescriptions AS pr
 INNER JOIN abx
   ON pr.drug = abx.drug AND pr.route = abx.route
-LEFT JOIN mimiciv_icu.icustays AS ie
+LEFT JOIN icu.icustays AS ie
   ON pr.hadm_id = ie.hadm_id
   AND pr.starttime >= ie.intime
   AND pr.starttime < ie.outtime

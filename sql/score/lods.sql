@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.lods; CREATE TABLE mimiciv_derived.lods AS
+DROP TABLE IF EXISTS derived.lods; CREATE TABLE derived.lods AS
 WITH cpap AS (
   SELECT
     ie.stay_id,
@@ -14,8 +14,8 @@ WITH cpap AS (
         ELSE 0
       END
     ) AS cpap
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_icu.chartevents AS ce
+  FROM icu.icustays AS ie
+  INNER JOIN icu.chartevents AS ce
     ON ie.stay_id = ce.stay_id
     AND ce.charttime >= ie.intime
     AND ce.charttime <= ie.intime + INTERVAL '1' DAY
@@ -33,12 +33,12 @@ WITH cpap AS (
     pao2fio2ratio,
     CASE WHEN NOT vd.stay_id IS NULL THEN 1 ELSE 0 END AS vent,
     CASE WHEN NOT cp.stay_id IS NULL THEN 1 ELSE 0 END AS cpap
-  FROM mimiciv_derived.bg AS bg
-  INNER JOIN mimiciv_icu.icustays AS ie
+  FROM derived.bg AS bg
+  INNER JOIN icu.icustays AS ie
     ON bg.hadm_id = ie.hadm_id
     AND bg.charttime >= ie.intime
     AND bg.charttime < ie.outtime
-  LEFT JOIN mimiciv_derived.ventilation AS vd
+  LEFT JOIN derived.ventilation AS vd
     ON ie.stay_id = vd.stay_id
     AND bg.charttime >= vd.starttime
     AND bg.charttime <= vd.endtime
@@ -79,20 +79,20 @@ WITH cpap AS (
     labs.pt_max,
     labs.platelets_min AS platelet_min,
     uo.urineoutput
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_hosp.admissions AS adm
+  FROM icu.icustays AS ie
+  INNER JOIN hosp.admissions AS adm
     ON ie.hadm_id = adm.hadm_id
-  INNER JOIN mimiciv_hosp.patients AS pat
+  INNER JOIN hosp.patients AS pat
     ON ie.subject_id = pat.subject_id
   LEFT JOIN pafi2 AS pf
     ON ie.stay_id = pf.stay_id
-  LEFT JOIN mimiciv_derived.first_day_gcs AS gcs
+  LEFT JOIN derived.first_day_gcs AS gcs
     ON ie.stay_id = gcs.stay_id
-  LEFT JOIN mimiciv_derived.first_day_vitalsign AS vital
+  LEFT JOIN derived.first_day_vitalsign AS vital
     ON ie.stay_id = vital.stay_id
-  LEFT JOIN mimiciv_derived.first_day_urine_output AS uo
+  LEFT JOIN derived.first_day_urine_output AS uo
     ON ie.stay_id = uo.stay_id
-  LEFT JOIN mimiciv_derived.first_day_lab AS labs
+  LEFT JOIN derived.first_day_lab AS labs
     ON ie.stay_id = labs.stay_id
 ), scorecomp AS (
   SELECT
@@ -202,6 +202,6 @@ SELECT
   pulmonary,
   hematologic,
   hepatic
-FROM mimiciv_icu.icustays AS ie
+FROM icu.icustays AS ie
 LEFT JOIN scorecomp AS s
   ON ie.stay_id = s.stay_id

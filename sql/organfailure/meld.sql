@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.meld; CREATE TABLE mimiciv_derived.meld AS
+DROP TABLE IF EXISTS derived.meld; CREATE TABLE derived.meld AS
 WITH cohort AS (
   SELECT
     ie.subject_id,
@@ -12,10 +12,10 @@ WITH cohort AS (
     labs.inr_max,
     labs.sodium_min,
     r.dialysis_present AS rrt
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.first_day_lab AS labs
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.first_day_lab AS labs
     ON ie.stay_id = labs.stay_id
-  LEFT JOIN mimiciv_derived.first_day_rrt AS r
+  LEFT JOIN derived.first_day_rrt AS r
     ON ie.stay_id = r.stay_id
 ), score AS (
   SELECT

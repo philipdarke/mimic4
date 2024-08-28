@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.ventilator_setting; CREATE TABLE mimiciv_derived.ventilator_setting AS
+DROP TABLE IF EXISTS derived.ventilator_setting; CREATE TABLE derived.ventilator_setting AS
 WITH ce AS (
   SELECT
     ce.subject_id,
@@ -24,7 +24,7 @@ WITH ce AS (
     END AS valuenum,
     valueuom,
     storetime
-  FROM mimiciv_icu.chartevents AS ce
+  FROM icu.chartevents AS ce
   WHERE
     NOT ce.value IS NULL
     AND NOT ce.stay_id IS NULL

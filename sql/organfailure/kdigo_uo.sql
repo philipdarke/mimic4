@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.kdigo_uo; CREATE TABLE mimiciv_derived.kdigo_uo AS
+DROP TABLE IF EXISTS derived.kdigo_uo; CREATE TABLE derived.kdigo_uo AS
 WITH uo_stg1 AS (
   SELECT
     ie.stay_id,
@@ -10,8 +10,8 @@ WITH uo_stg1 AS (
       1
     ) AS hours_since_previous_row,
     urineoutput
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_derived.urine_output AS uo
+  FROM icu.icustays AS ie
+  INNER JOIN derived.urine_output AS uo
     ON ie.stay_id = uo.stay_id
 ), uo_stg2 AS (
   SELECT
@@ -59,7 +59,7 @@ SELECT
   uo_tm_12hr,
   uo_tm_24hr
 FROM uo_stg2 AS ur
-LEFT JOIN mimiciv_derived.weight_durations AS wd
+LEFT JOIN derived.weight_durations AS wd
   ON ur.stay_id = wd.stay_id
   AND ur.charttime >= wd.starttime
   AND ur.charttime < wd.endtime

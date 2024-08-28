@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.oxygen_delivery; CREATE TABLE mimiciv_derived.oxygen_delivery AS
+DROP TABLE IF EXISTS derived.oxygen_delivery; CREATE TABLE derived.oxygen_delivery AS
 WITH ce_stg1 AS (
   SELECT
     ce.subject_id,
@@ -10,7 +10,7 @@ WITH ce_stg1 AS (
     valuenum,
     valueuom,
     storetime
-  FROM mimiciv_icu.chartevents AS ce
+  FROM icu.chartevents AS ce
   WHERE
     NOT ce.value IS NULL AND ce.itemid IN (223834, 227582, 227287)
 ), ce_stg2 AS (
@@ -32,7 +32,7 @@ WITH ce_stg1 AS (
     itemid,
     value AS o2_device,
     ROW_NUMBER() OVER (PARTITION BY subject_id, charttime, itemid ORDER BY value NULLS FIRST) AS rn
-  FROM mimiciv_icu.chartevents
+  FROM icu.chartevents
   WHERE
     itemid = 226732
 ), stg AS (

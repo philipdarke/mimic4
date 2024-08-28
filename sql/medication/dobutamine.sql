@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.dobutamine; CREATE TABLE mimiciv_derived.dobutamine AS
+DROP TABLE IF EXISTS derived.dobutamine; CREATE TABLE derived.dobutamine AS
 SELECT
   stay_id,
   linkorderid,
@@ -7,6 +7,6 @@ SELECT
   amount AS vaso_amount,
   starttime,
   endtime
-FROM mimiciv_icu.inputevents
+FROM icu.inputevents
 WHERE
   itemid = 221653

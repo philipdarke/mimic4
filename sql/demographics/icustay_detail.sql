@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.icustay_detail; CREATE TABLE mimiciv_derived.icustay_detail AS
+DROP TABLE IF EXISTS derived.icustay_detail; CREATE TABLE derived.icustay_detail AS
 SELECT
   ie.subject_id,
   ie.hadm_id,
@@ -30,8 +30,8 @@ SELECT
     THEN TRUE
     ELSE FALSE
   END AS first_icu_stay
-FROM mimiciv_icu.icustays AS ie
-INNER JOIN mimiciv_hosp.admissions AS adm
+FROM icu.icustays AS ie
+INNER JOIN hosp.admissions AS adm
   ON ie.hadm_id = adm.hadm_id
-INNER JOIN mimiciv_hosp.patients AS pat
+INNER JOIN hosp.patients AS pat
   ON ie.subject_id = pat.subject_id

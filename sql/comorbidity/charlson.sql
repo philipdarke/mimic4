@@ -1,11 +1,11 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.charlson; CREATE TABLE mimiciv_derived.charlson AS
+DROP TABLE IF EXISTS derived.charlson; CREATE TABLE derived.charlson AS
 WITH diag AS (
   SELECT
     hadm_id,
     CASE WHEN icd_version = 9 THEN icd_code ELSE NULL END AS icd9_code,
     CASE WHEN icd_version = 10 THEN icd_code ELSE NULL END AS icd10_code
-  FROM mimiciv_hosp.diagnoses_icd
+  FROM hosp.diagnoses_icd
 ), com AS (
   SELECT
     ad.hadm_id,
@@ -182,7 +182,7 @@ WITH diag AS (
         ELSE 0
       END
     ) AS aids
-  FROM mimiciv_hosp.admissions AS ad
+  FROM hosp.admissions AS ad
   LEFT JOIN diag
     ON ad.hadm_id = diag.hadm_id
   GROUP BY
@@ -202,7 +202,7 @@ WITH diag AS (
       THEN 3
       ELSE 4
     END AS age_score
-  FROM mimiciv_derived.age
+  FROM derived.age
 )
 SELECT
   ad.subject_id,
@@ -226,7 +226,7 @@ SELECT
   metastatic_solid_tumor,
   aids,
   age_score + myocardial_infarct + congestive_heart_failure + peripheral_vascular_disease + cerebrovascular_disease + dementia + chronic_pulmonary_disease + rheumatic_disease + peptic_ulcer_disease + GREATEST(mild_liver_disease, 3 * severe_liver_disease) + GREATEST(2 * diabetes_with_cc, diabetes_without_cc) + GREATEST(2 * malignant_cancer, 6 * metastatic_solid_tumor) + 2 * paraplegia + 2 * renal_disease + 6 * aids AS charlson_comorbidity_index
-FROM mimiciv_hosp.admissions AS ad
+FROM hosp.admissions AS ad
 LEFT JOIN com
   ON ad.hadm_id = com.hadm_id
 LEFT JOIN ag

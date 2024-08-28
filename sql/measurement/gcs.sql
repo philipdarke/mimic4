@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.gcs; CREATE TABLE mimiciv_derived.gcs AS
+DROP TABLE IF EXISTS derived.gcs; CREATE TABLE derived.gcs AS
 WITH base AS (
   SELECT
     subject_id,
@@ -18,7 +18,7 @@ WITH base AS (
     MAX(CASE WHEN ce.itemid = 220739 THEN ce.valuenum ELSE NULL END) AS gcseyes,
     MAX(CASE WHEN ce.itemid = 223900 AND ce.value = 'No Response-ETT' THEN 1 ELSE 0 END) AS endotrachflag,
     ROW_NUMBER() OVER (PARTITION BY ce.stay_id ORDER BY ce.charttime ASC NULLS FIRST) AS rn
-  FROM mimiciv_icu.chartevents AS ce
+  FROM icu.chartevents AS ce
   WHERE
     ce.itemid IN (223900, 223901, 220739)
   GROUP BY

@@ -1,12 +1,12 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.urine_output_rate; CREATE TABLE mimiciv_derived.urine_output_rate AS
+DROP TABLE IF EXISTS derived.urine_output_rate; CREATE TABLE derived.urine_output_rate AS
 WITH tm AS (
   SELECT
     ie.stay_id,
     MIN(charttime) AS intime_hr,
     MAX(charttime) AS outtime_hr
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_icu.chartevents AS ce
+  FROM icu.icustays AS ie
+  INNER JOIN icu.chartevents AS ce
     ON ie.stay_id = ce.stay_id
     AND ce.itemid = 220045
     AND ce.charttime > ie.intime - INTERVAL '1' MONTH
@@ -24,7 +24,7 @@ WITH tm AS (
     uo.charttime,
     uo.urineoutput
   FROM tm
-  INNER JOIN mimiciv_derived.urine_output AS uo
+  INNER JOIN derived.urine_output AS uo
     ON tm.stay_id = uo.stay_id
   WINDOW w AS (PARTITION BY tm.stay_id ORDER BY charttime NULLS FIRST)
 ), ur_stg AS (
@@ -103,7 +103,7 @@ SELECT
   ROUND(TRY_CAST(uo_tm_12hr AS DECIMAL), 2) AS uo_tm_12hr,
   ROUND(TRY_CAST(uo_tm_24hr AS DECIMAL), 2) AS uo_tm_24hr
 FROM ur_stg AS ur
-LEFT JOIN mimiciv_derived.weight_durations AS wd
+LEFT JOIN derived.weight_durations AS wd
   ON ur.stay_id = wd.stay_id
   AND ur.charttime > wd.starttime
   AND ur.charttime <= wd.endtime

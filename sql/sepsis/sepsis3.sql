@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.sepsis3; CREATE TABLE mimiciv_derived.sepsis3 AS
+DROP TABLE IF EXISTS derived.sepsis3; CREATE TABLE derived.sepsis3 AS
 WITH sofa AS (
   SELECT
     stay_id,
@@ -12,7 +12,7 @@ WITH sofa AS (
     cns_24hours AS cns,
     renal_24hours AS renal,
     sofa_24hours AS sofa_score
-  FROM mimiciv_derived.sofa
+  FROM derived.sofa
   WHERE
     sofa_24hours >= 2
 ), s1 AS (
@@ -38,7 +38,7 @@ WITH sofa AS (
     sofa_score,
     sofa_score >= 2 AND suspected_infection = 1 AS sepsis3,
     ROW_NUMBER() OVER (PARTITION BY soi.stay_id ORDER BY suspected_infection_time NULLS FIRST, antibiotic_time NULLS FIRST, culture_time NULLS FIRST, endtime NULLS FIRST) AS rn_sus
-  FROM mimiciv_derived.suspicion_of_infection AS soi
+  FROM derived.suspicion_of_infection AS soi
   INNER JOIN sofa
     ON soi.stay_id = sofa.stay_id
     AND sofa.endtime >= soi.suspected_infection_time - INTERVAL '48' HOUR

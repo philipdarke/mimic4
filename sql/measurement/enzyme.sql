@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.enzyme; CREATE TABLE mimiciv_derived.enzyme AS
+DROP TABLE IF EXISTS derived.enzyme; CREATE TABLE derived.enzyme AS
 SELECT
   MAX(subject_id) AS subject_id,
   MAX(hadm_id) AS hadm_id,
@@ -16,7 +16,7 @@ SELECT
   MAX(CASE WHEN itemid = 50911 THEN valuenum ELSE NULL END) AS ck_mb,
   MAX(CASE WHEN itemid = 50927 THEN valuenum ELSE NULL END) AS ggt,
   MAX(CASE WHEN itemid = 50954 THEN valuenum ELSE NULL END) AS ld_ldh
-FROM mimiciv_hosp.labevents AS le
+FROM hosp.labevents AS le
 WHERE
   le.itemid IN (50861, 50863, 50878, 50867, 50885, 50884, 50883, 50910, 50911, 50927, 50954)
   AND NOT valuenum IS NULL

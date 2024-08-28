@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.sapsii; CREATE TABLE mimiciv_derived.sapsii AS
+DROP TABLE IF EXISTS derived.sapsii; CREATE TABLE derived.sapsii AS
 WITH co AS (
   SELECT
     subject_id,
@@ -7,7 +7,7 @@ WITH co AS (
     stay_id,
     intime AS starttime,
     intime + INTERVAL '24' HOUR AS endtime
-  FROM mimiciv_icu.icustays
+  FROM icu.icustays
 ), cpap AS (
   SELECT
     co.subject_id,
@@ -16,7 +16,7 @@ WITH co AS (
     LEAST(MAX(charttime + INTERVAL '4' HOUR), co.endtime) AS endtime,
     MAX(CASE WHEN REGEXP_MATCHES(LOWER(ce.value), '(cpap mask|bipap)') THEN 1 ELSE 0 END) AS cpap
   FROM co
-  INNER JOIN mimiciv_icu.chartevents AS ce
+  INNER JOIN icu.chartevents AS ce
     ON co.stay_id = ce.stay_id
     AND ce.charttime > co.starttime
     AND ce.charttime <= co.endtime
@@ -32,8 +32,8 @@ WITH co AS (
     adm.hadm_id,
     CASE WHEN LOWER(curr_service) LIKE '%surg%' THEN 1 ELSE 0 END AS surgical,
     ROW_NUMBER() OVER (PARTITION BY adm.hadm_id ORDER BY transfertime NULLS FIRST) AS serviceorder
-  FROM mimiciv_hosp.admissions AS adm
-  LEFT JOIN mimiciv_hosp.services AS se
+  FROM hosp.admissions AS adm
+  LEFT JOIN hosp.services AS se
     ON adm.hadm_id = se.hadm_id
 ), comorb AS (
   SELECT
@@ -97,7 +97,7 @@ WITH co AS (
         ELSE 0
       END
     ) AS mets
-  FROM mimiciv_hosp.diagnoses_icd
+  FROM hosp.diagnoses_icd
   GROUP BY
     hadm_id
 ), pafi1 AS (
@@ -108,12 +108,12 @@ WITH co AS (
     CASE WHEN NOT vd.stay_id IS NULL THEN 1 ELSE 0 END AS vent,
     CASE WHEN NOT cp.subject_id IS NULL THEN 1 ELSE 0 END AS cpap
   FROM co
-  LEFT JOIN mimiciv_derived.bg AS bg
+  LEFT JOIN derived.bg AS bg
     ON co.subject_id = bg.subject_id
     AND bg.specimen = 'ART.'
     AND bg.charttime > co.starttime
     AND bg.charttime <= co.endtime
-  LEFT JOIN mimiciv_derived.ventilation AS vd
+  LEFT JOIN derived.ventilation AS vd
     ON co.stay_id = vd.stay_id
     AND bg.charttime > vd.starttime
     AND bg.charttime <= vd.endtime
@@ -136,7 +136,7 @@ WITH co AS (
     co.stay_id,
     MIN(gcs.gcs) AS mingcs
   FROM co
-  LEFT JOIN mimiciv_derived.gcs AS gcs
+  LEFT JOIN derived.gcs AS gcs
     ON co.stay_id = gcs.stay_id
     AND co.starttime < gcs.charttime
     AND gcs.charttime <= co.endtime
@@ -152,7 +152,7 @@ WITH co AS (
     MIN(vital.temperature) AS tempc_min,
     MAX(vital.temperature) AS tempc_max
   FROM co
-  LEFT JOIN mimiciv_derived.vitalsign AS vital
+  LEFT JOIN derived.vitalsign AS vital
     ON co.subject_id = vital.subject_id
     AND co.starttime < vital.charttime
     AND co.endtime >= vital.charttime
@@ -163,7 +163,7 @@ WITH co AS (
     co.stay_id,
     SUM(uo.urineoutput) AS urineoutput
   FROM co
-  LEFT JOIN mimiciv_derived.urine_output AS uo
+  LEFT JOIN derived.urine_output AS uo
     ON co.stay_id = uo.stay_id
     AND co.starttime < uo.charttime
     AND co.endtime >= uo.charttime
@@ -181,7 +181,7 @@ WITH co AS (
     MIN(labs.bicarbonate) AS bicarbonate_min,
     MAX(labs.bicarbonate) AS bicarbonate_max
   FROM co
-  LEFT JOIN mimiciv_derived.chemistry AS labs
+  LEFT JOIN derived.chemistry AS labs
     ON co.subject_id = labs.subject_id
     AND co.starttime < labs.charttime
     AND co.endtime >= labs.charttime
@@ -193,7 +193,7 @@ WITH co AS (
     MIN(cbc.wbc) AS wbc_min,
     MAX(cbc.wbc) AS wbc_max
   FROM co
-  LEFT JOIN mimiciv_derived.complete_blood_count AS cbc
+  LEFT JOIN derived.complete_blood_count AS cbc
     ON co.subject_id = cbc.subject_id
     AND co.starttime < cbc.charttime
     AND co.endtime >= cbc.charttime
@@ -205,7 +205,7 @@ WITH co AS (
     MIN(enz.bilirubin_total) AS bilirubin_min,
     MAX(enz.bilirubin_total) AS bilirubin_max
   FROM co
-  LEFT JOIN mimiciv_derived.enzyme AS enz
+  LEFT JOIN derived.enzyme AS enz
     ON co.subject_id = enz.subject_id
     AND co.starttime < enz.charttime
     AND co.endtime >= enz.charttime
@@ -252,10 +252,10 @@ WITH co AS (
       THEN 'UnscheduledSurgical'
       ELSE 'Medical'
     END AS admissiontype
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_hosp.admissions AS adm
+  FROM icu.icustays AS ie
+  INNER JOIN hosp.admissions AS adm
     ON ie.hadm_id = adm.hadm_id
-  LEFT JOIN mimiciv_derived.age AS va
+  LEFT JOIN derived.age AS va
     ON ie.hadm_id = va.hadm_id
   INNER JOIN co
     ON ie.stay_id = co.stay_id

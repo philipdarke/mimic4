@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.nsaid; CREATE TABLE mimiciv_derived.nsaid AS
+DROP TABLE IF EXISTS derived.nsaid; CREATE TABLE derived.nsaid AS
 WITH nsaid_drug AS (
   SELECT DISTINCT
     drug,
@@ -46,7 +46,7 @@ WITH nsaid_drug AS (
       THEN 1
       ELSE 0
     END AS nsaid
-  FROM mimiciv_hosp.prescriptions
+  FROM hosp.prescriptions
 )
 SELECT
   pr.subject_id,
@@ -54,7 +54,7 @@ SELECT
   pr.drug AS nsaid,
   pr.starttime,
   pr.stoptime
-FROM mimiciv_hosp.prescriptions AS pr
+FROM hosp.prescriptions AS pr
 INNER JOIN nsaid_drug
   ON pr.drug = nsaid_drug.drug
 WHERE

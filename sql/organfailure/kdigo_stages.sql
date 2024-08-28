@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.kdigo_stages; CREATE TABLE mimiciv_derived.kdigo_stages AS
+DROP TABLE IF EXISTS derived.kdigo_stages; CREATE TABLE derived.kdigo_stages AS
 WITH cr_stg AS (
   SELECT
     cr.stay_id,
@@ -33,7 +33,7 @@ WITH cr_stg AS (
       THEN 1
       ELSE 0
     END AS aki_stage_creat
-  FROM mimiciv_derived.kdigo_creatinine AS cr
+  FROM derived.kdigo_creatinine AS cr
 ), uo_stg AS (
   SELECT
     uo.stay_id,
@@ -57,15 +57,15 @@ WITH cr_stg AS (
       THEN 1
       ELSE 0
     END AS aki_stage_uo
-  FROM mimiciv_derived.kdigo_uo AS uo
-  INNER JOIN mimiciv_icu.icustays AS ie
+  FROM derived.kdigo_uo AS uo
+  INNER JOIN icu.icustays AS ie
     ON uo.stay_id = ie.stay_id
 ), crrt_stg AS (
   SELECT
     stay_id,
     charttime,
     CASE WHEN NOT charttime IS NULL THEN 3 ELSE NULL END AS aki_stage_crrt
-  FROM mimiciv_derived.crrt
+  FROM derived.crrt
   WHERE
     NOT crrt_mode IS NULL
 ), tm_stg AS (
@@ -110,7 +110,7 @@ SELECT
       COALESCE(crrt.aki_stage_crrt, 0)
     )
   ) OVER (PARTITION BY ie.subject_id ORDER BY DATE_DIFF('microseconds', ie.intime, tm.charttime)/1000000.0 NULLS FIRST RANGE BETWEEN 21600 PRECEDING AND CURRENT ROW) AS aki_stage_smoothed
-FROM mimiciv_icu.icustays AS ie
+FROM icu.icustays AS ie
 LEFT JOIN tm_stg AS tm
   ON ie.stay_id = tm.stay_id
 LEFT JOIN cr_stg AS cr

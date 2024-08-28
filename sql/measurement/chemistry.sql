@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.chemistry; CREATE TABLE mimiciv_derived.chemistry AS
+DROP TABLE IF EXISTS derived.chemistry; CREATE TABLE derived.chemistry AS
 SELECT
   MAX(subject_id) AS subject_id,
   MAX(hadm_id) AS hadm_id,
@@ -17,7 +17,7 @@ SELECT
   MAX(CASE WHEN itemid = 50931 AND valuenum <= 10000 THEN valuenum ELSE NULL END) AS glucose,
   MAX(CASE WHEN itemid = 50983 AND valuenum <= 200 THEN valuenum ELSE NULL END) AS sodium,
   MAX(CASE WHEN itemid = 50971 AND valuenum <= 30 THEN valuenum ELSE NULL END) AS potassium
-FROM mimiciv_hosp.labevents AS le
+FROM hosp.labevents AS le
 WHERE
   le.itemid IN (50862, 50930, 50976, 50868, 50882, 50893, 50912, 50902, 50931, 50971, 50983, 51006)
   AND NOT valuenum IS NULL

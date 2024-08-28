@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.first_day_lab; CREATE TABLE mimiciv_derived.first_day_lab AS
+DROP TABLE IF EXISTS derived.first_day_lab; CREATE TABLE derived.first_day_lab AS
 WITH cbc AS (
   SELECT
     ie.stay_id,
@@ -11,8 +11,8 @@ WITH cbc AS (
     MAX(platelet) AS platelets_max,
     MIN(wbc) AS wbc_min,
     MAX(wbc) AS wbc_max
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.complete_blood_count AS le
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.complete_blood_count AS le
     ON le.subject_id = ie.subject_id
     AND le.charttime >= ie.intime - INTERVAL '6' HOUR
     AND le.charttime <= ie.intime + INTERVAL '1' DAY
@@ -45,8 +45,8 @@ WITH cbc AS (
     MAX(sodium) AS sodium_max,
     MIN(potassium) AS potassium_min,
     MAX(potassium) AS potassium_max
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.chemistry AS le
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.chemistry AS le
     ON le.subject_id = ie.subject_id
     AND le.charttime >= ie.intime - INTERVAL '6' HOUR
     AND le.charttime <= ie.intime + INTERVAL '1' DAY
@@ -75,8 +75,8 @@ WITH cbc AS (
     MAX(metamyelocytes) AS metas_max,
     MIN(nrbc) AS nrbc_min,
     MAX(nrbc) AS nrbc_max
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.blood_differential AS le
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.blood_differential AS le
     ON le.subject_id = ie.subject_id
     AND le.charttime >= ie.intime - INTERVAL '6' HOUR
     AND le.charttime <= ie.intime + INTERVAL '1' DAY
@@ -97,8 +97,8 @@ WITH cbc AS (
     MAX(pt) AS pt_max,
     MIN(ptt) AS ptt_min,
     MAX(ptt) AS ptt_max
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.coagulation AS le
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.coagulation AS le
     ON le.subject_id = ie.subject_id
     AND le.charttime >= ie.intime - INTERVAL '6' HOUR
     AND le.charttime <= ie.intime + INTERVAL '1' DAY
@@ -129,8 +129,8 @@ WITH cbc AS (
     MAX(ggt) AS ggt_max,
     MIN(ld_ldh) AS ld_ldh_min,
     MAX(ld_ldh) AS ld_ldh_max
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.enzyme AS le
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.enzyme AS le
     ON le.subject_id = ie.subject_id
     AND le.charttime >= ie.intime - INTERVAL '6' HOUR
     AND le.charttime <= ie.intime + INTERVAL '1' DAY
@@ -226,7 +226,7 @@ SELECT
   ggt_max,
   ld_ldh_min,
   ld_ldh_max
-FROM mimiciv_icu.icustays AS ie
+FROM icu.icustays AS ie
 LEFT JOIN cbc
   ON ie.stay_id = cbc.stay_id
 LEFT JOIN chem

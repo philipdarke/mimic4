@@ -1,12 +1,12 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.first_day_sofa; CREATE TABLE mimiciv_derived.first_day_sofa AS
+DROP TABLE IF EXISTS derived.first_day_sofa; CREATE TABLE derived.first_day_sofa AS
 WITH vaso_stg AS (
   SELECT
     ie.stay_id,
     'norepinephrine' AS treatment,
     vaso_rate AS rate
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_derived.norepinephrine AS mv
+  FROM icu.icustays AS ie
+  INNER JOIN derived.norepinephrine AS mv
     ON ie.stay_id = mv.stay_id
     AND mv.starttime >= ie.intime - INTERVAL '6' HOUR
     AND mv.starttime <= ie.intime + INTERVAL '1' DAY
@@ -15,8 +15,8 @@ WITH vaso_stg AS (
     ie.stay_id,
     'epinephrine' AS treatment,
     vaso_rate AS rate
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_derived.epinephrine AS mv
+  FROM icu.icustays AS ie
+  INNER JOIN derived.epinephrine AS mv
     ON ie.stay_id = mv.stay_id
     AND mv.starttime >= ie.intime - INTERVAL '6' HOUR
     AND mv.starttime <= ie.intime + INTERVAL '1' DAY
@@ -25,8 +25,8 @@ WITH vaso_stg AS (
     ie.stay_id,
     'dobutamine' AS treatment,
     vaso_rate AS rate
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_derived.dobutamine AS mv
+  FROM icu.icustays AS ie
+  INNER JOIN derived.dobutamine AS mv
     ON ie.stay_id = mv.stay_id
     AND mv.starttime >= ie.intime - INTERVAL '6' HOUR
     AND mv.starttime <= ie.intime + INTERVAL '1' DAY
@@ -35,8 +35,8 @@ WITH vaso_stg AS (
     ie.stay_id,
     'dopamine' AS treatment,
     vaso_rate AS rate
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_derived.dopamine AS mv
+  FROM icu.icustays AS ie
+  INNER JOIN derived.dopamine AS mv
     ON ie.stay_id = mv.stay_id
     AND mv.starttime >= ie.intime - INTERVAL '6' HOUR
     AND mv.starttime <= ie.intime + INTERVAL '1' DAY
@@ -47,7 +47,7 @@ WITH vaso_stg AS (
     MAX(CASE WHEN treatment = 'epinephrine' THEN rate ELSE NULL END) AS rate_epinephrine,
     MAX(CASE WHEN treatment = 'dopamine' THEN rate ELSE NULL END) AS rate_dopamine,
     MAX(CASE WHEN treatment = 'dobutamine' THEN rate ELSE NULL END) AS rate_dobutamine
-  FROM mimiciv_icu.icustays AS ie
+  FROM icu.icustays AS ie
   LEFT JOIN vaso_stg AS v
     ON ie.stay_id = v.stay_id
   GROUP BY
@@ -58,12 +58,12 @@ WITH vaso_stg AS (
     bg.charttime,
     bg.pao2fio2ratio,
     CASE WHEN NOT vd.stay_id IS NULL THEN 1 ELSE 0 END AS isvent
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.bg AS bg
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.bg AS bg
     ON ie.subject_id = bg.subject_id
     AND bg.charttime >= ie.intime - INTERVAL '6' HOUR
     AND bg.charttime <= ie.intime + INTERVAL '1' DAY
-  LEFT JOIN mimiciv_derived.ventilation AS vd
+  LEFT JOIN derived.ventilation AS vd
     ON ie.stay_id = vd.stay_id
     AND bg.charttime >= vd.starttime
     AND bg.charttime <= vd.endtime
@@ -91,18 +91,18 @@ WITH vaso_stg AS (
     pf.pao2fio2_vent_min,
     uo.urineoutput,
     gcs.gcs_min
-  FROM mimiciv_icu.icustays AS ie
+  FROM icu.icustays AS ie
   LEFT JOIN vaso_mv AS mv
     ON ie.stay_id = mv.stay_id
   LEFT JOIN pafi2 AS pf
     ON ie.stay_id = pf.stay_id
-  LEFT JOIN mimiciv_derived.first_day_vitalsign AS v
+  LEFT JOIN derived.first_day_vitalsign AS v
     ON ie.stay_id = v.stay_id
-  LEFT JOIN mimiciv_derived.first_day_lab AS l
+  LEFT JOIN derived.first_day_lab AS l
     ON ie.stay_id = l.stay_id
-  LEFT JOIN mimiciv_derived.first_day_urine_output AS uo
+  LEFT JOIN derived.first_day_urine_output AS uo
     ON ie.stay_id = uo.stay_id
-  LEFT JOIN mimiciv_derived.first_day_gcs AS gcs
+  LEFT JOIN derived.first_day_gcs AS gcs
     ON ie.stay_id = gcs.stay_id
 ), scorecalc AS (
   SELECT
@@ -216,6 +216,6 @@ SELECT
   cardiovascular,
   cns,
   renal
-FROM mimiciv_icu.icustays AS ie
+FROM icu.icustays AS ie
 LEFT JOIN scorecalc AS s
   ON ie.stay_id = s.stay_id

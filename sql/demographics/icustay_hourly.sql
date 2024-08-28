@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.icustay_hourly; CREATE TABLE mimiciv_derived.icustay_hourly AS
+DROP TABLE IF EXISTS derived.icustay_hourly; CREATE TABLE derived.icustay_hourly AS
 WITH all_hours AS (
   SELECT
     it.stay_id,
@@ -12,7 +12,7 @@ WITH all_hours AS (
       -24,
       TRY_CAST(CEIL(DATE_DIFF('microseconds', it.intime_hr, it.outtime_hr)/3600000000.0) AS INT)
     ) AS hrs
-  FROM mimiciv_derived.icustay_times AS it
+  FROM derived.icustay_times AS it
 )
 SELECT
   stay_id,

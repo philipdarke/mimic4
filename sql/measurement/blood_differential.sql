@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.blood_differential; CREATE TABLE mimiciv_derived.blood_differential AS
+DROP TABLE IF EXISTS derived.blood_differential; CREATE TABLE derived.blood_differential AS
 WITH blood_diff AS (
   SELECT
     MAX(subject_id) AS subject_id,
@@ -59,7 +59,7 @@ WITH blood_diff AS (
       THEN 1
       ELSE 0
     END AS impute_abs
-  FROM mimiciv_hosp.labevents AS le
+  FROM hosp.labevents AS le
   WHERE
     le.itemid IN (51146, 52069, 51199, 51200, 52073, 51244, 51245, 51133, 52769, 51253, 51254, 52074, 51256, 52075, 51143, 51144, 51218, 52135, 51251, 51257, 51300, 51301, 51755)
     AND NOT valuenum IS NULL

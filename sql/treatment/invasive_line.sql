@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.invasive_line; CREATE TABLE mimiciv_derived.invasive_line AS
+DROP TABLE IF EXISTS derived.invasive_line; CREATE TABLE derived.invasive_line AS
 WITH mv AS (
   SELECT
     stay_id,
@@ -8,8 +8,8 @@ WITH mv AS (
     mv.location AS line_site,
     starttime,
     endtime
-  FROM mimiciv_icu.procedureevents AS mv
-  INNER JOIN mimiciv_icu.d_items AS di
+  FROM icu.procedureevents AS mv
+  INNER JOIN icu.d_items AS di
     ON mv.itemid = di.itemid
   WHERE
     mv.itemid IN (227719, 225752, 224269, 224267, 224270, 224272, 226124, 228169, 225202, 228286, 225204, 224263, 224560, 224264, 225203, 224273, 225789, 225761, 228201, 228202, 224268, 225199, 225315, 225205)

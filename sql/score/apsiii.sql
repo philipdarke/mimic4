@@ -1,17 +1,17 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.apsiii; CREATE TABLE mimiciv_derived.apsiii AS
+DROP TABLE IF EXISTS derived.apsiii; CREATE TABLE derived.apsiii AS
 WITH pa AS (
   SELECT
     ie.stay_id,
     bg.charttime,
     po2 AS pao2,
     ROW_NUMBER() OVER (PARTITION BY ie.stay_id ORDER BY bg.po2 DESC) AS rn
-  FROM mimiciv_derived.bg AS bg
-  INNER JOIN mimiciv_icu.icustays AS ie
+  FROM derived.bg AS bg
+  INNER JOIN icu.icustays AS ie
     ON bg.hadm_id = ie.hadm_id
     AND bg.charttime >= ie.intime
     AND bg.charttime < ie.outtime
-  LEFT JOIN mimiciv_derived.ventilation AS vd
+  LEFT JOIN derived.ventilation AS vd
     ON ie.stay_id = vd.stay_id
     AND bg.charttime >= vd.starttime
     AND bg.charttime <= vd.endtime
@@ -27,12 +27,12 @@ WITH pa AS (
     bg.charttime,
     bg.aado2,
     ROW_NUMBER() OVER (PARTITION BY ie.stay_id ORDER BY bg.aado2 DESC) AS rn
-  FROM mimiciv_derived.bg AS bg
-  INNER JOIN mimiciv_icu.icustays AS ie
+  FROM derived.bg AS bg
+  INNER JOIN icu.icustays AS ie
     ON bg.hadm_id = ie.hadm_id
     AND bg.charttime >= ie.intime
     AND bg.charttime < ie.outtime
-  INNER JOIN mimiciv_derived.ventilation AS vd
+  INNER JOIN derived.ventilation AS vd
     ON ie.stay_id = vd.stay_id
     AND bg.charttime >= vd.starttime
     AND bg.charttime <= vd.endtime
@@ -64,8 +64,8 @@ WITH pa AS (
       THEN CASE WHEN pco2 < 40 THEN 3 ELSE 12 END
       ELSE CASE WHEN pco2 < 25 THEN 0 WHEN pco2 < 40 THEN 3 ELSE 12 END
     END AS acidbase_score
-  FROM mimiciv_derived.bg AS bg
-  INNER JOIN mimiciv_icu.icustays AS ie
+  FROM derived.bg AS bg
+  INNER JOIN icu.icustays AS ie
     ON bg.hadm_id = ie.hadm_id
     AND bg.charttime >= ie.intime
     AND bg.charttime < ie.outtime
@@ -87,10 +87,10 @@ WITH pa AS (
       THEN 1
       ELSE 0
     END AS arf
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.first_day_urine_output AS uo
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.first_day_urine_output AS uo
     ON ie.stay_id = uo.stay_id
-  LEFT JOIN mimiciv_derived.first_day_lab AS labs
+  LEFT JOIN derived.first_day_lab AS labs
     ON ie.stay_id = labs.stay_id
   LEFT JOIN (
     SELECT
@@ -104,7 +104,7 @@ WITH pa AS (
           ELSE 0
         END
       ) AS ckd
-    FROM mimiciv_hosp.diagnoses_icd
+    FROM hosp.diagnoses_icd
     GROUP BY
       hadm_id
   ) AS icd
@@ -113,8 +113,8 @@ WITH pa AS (
   SELECT
     ie.stay_id,
     MAX(CASE WHEN NOT v.stay_id IS NULL THEN 1 ELSE 0 END) AS vent
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.ventilation AS v
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.ventilation AS v
     ON ie.stay_id = v.stay_id
     AND v.ventilation_status = 'InvasiveVent'
     AND (
@@ -190,10 +190,10 @@ WITH pa AS (
     gcs.gcs_eyes,
     gcs.gcs_unable,
     arf.arf AS arf
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_hosp.admissions AS adm
+  FROM icu.icustays AS ie
+  INNER JOIN hosp.admissions AS adm
     ON ie.hadm_id = adm.hadm_id
-  INNER JOIN mimiciv_hosp.patients AS pat
+  INNER JOIN hosp.patients AS pat
     ON ie.subject_id = pat.subject_id
   LEFT JOIN pa
     ON ie.stay_id = pa.stay_id AND pa.rn = 1
@@ -205,13 +205,13 @@ WITH pa AS (
     ON ie.stay_id = arf.stay_id
   LEFT JOIN vent
     ON ie.stay_id = vent.stay_id
-  LEFT JOIN mimiciv_derived.first_day_gcs AS gcs
+  LEFT JOIN derived.first_day_gcs AS gcs
     ON ie.stay_id = gcs.stay_id
-  LEFT JOIN mimiciv_derived.first_day_vitalsign AS vital
+  LEFT JOIN derived.first_day_vitalsign AS vital
     ON ie.stay_id = vital.stay_id
-  LEFT JOIN mimiciv_derived.first_day_urine_output AS uo
+  LEFT JOIN derived.first_day_urine_output AS uo
     ON ie.stay_id = uo.stay_id
-  LEFT JOIN mimiciv_derived.first_day_lab AS labs
+  LEFT JOIN derived.first_day_lab AS labs
     ON ie.stay_id = labs.stay_id
 ), score_min AS (
   SELECT
@@ -868,6 +868,6 @@ SELECT
   glucose_score,
   acidbase_score,
   gcs_score
-FROM mimiciv_icu.icustays AS ie
+FROM icu.icustays AS ie
 LEFT JOIN score AS s
   ON ie.stay_id = s.stay_id

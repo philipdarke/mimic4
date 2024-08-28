@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.crrt; CREATE TABLE mimiciv_derived.crrt AS
+DROP TABLE IF EXISTS derived.crrt; CREATE TABLE derived.crrt AS
 WITH crrt_settings AS (
   SELECT
     ce.stay_id,
@@ -43,7 +43,7 @@ WITH crrt_settings AS (
       ELSE NULL
     END AS clots_increasing,
     CASE WHEN ce.itemid = 224146 AND ce.value IN ('Clotted') THEN 1 ELSE NULL END AS clotted
-  FROM mimiciv_icu.chartevents AS ce
+  FROM icu.chartevents AS ce
   WHERE
     ce.itemid IN (227290, 224146, 224149, 224144, 228004, 225183, 225977, 224154, 224151, 224150, 225958, 224145, 224191, 228005, 228006, 225976, 224153, 224152, 226457)
     AND NOT ce.value IS NULL

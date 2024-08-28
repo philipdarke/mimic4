@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.oasis; CREATE TABLE mimiciv_derived.oasis AS
+DROP TABLE IF EXISTS derived.oasis; CREATE TABLE derived.oasis AS
 WITH surgflag AS (
   SELECT
     ie.stay_id,
@@ -12,8 +12,8 @@ WITH surgflag AS (
         ELSE 0
       END
     ) AS surgical
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_hosp.services AS se
+  FROM icu.icustays AS ie
+  LEFT JOIN hosp.services AS se
     ON ie.hadm_id = se.hadm_id AND se.transfertime < ie.intime + INTERVAL '1' DAY
   GROUP BY
     ie.stay_id
@@ -21,8 +21,8 @@ WITH surgflag AS (
   SELECT
     ie.stay_id,
     MAX(CASE WHEN NOT v.stay_id IS NULL THEN 1 ELSE 0 END) AS vent
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.ventilation AS v
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.ventilation AS v
     ON ie.stay_id = v.stay_id
     AND v.ventilation_status = 'InvasiveVent'
     AND (
@@ -76,20 +76,20 @@ WITH surgflag AS (
       ELSE 0
     END AS icustay_expire_flag,
     adm.hospital_expire_flag
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_hosp.admissions AS adm
+  FROM icu.icustays AS ie
+  INNER JOIN hosp.admissions AS adm
     ON ie.hadm_id = adm.hadm_id
-  INNER JOIN mimiciv_hosp.patients AS pat
+  INNER JOIN hosp.patients AS pat
     ON ie.subject_id = pat.subject_id
-  LEFT JOIN mimiciv_derived.age AS ag
+  LEFT JOIN derived.age AS ag
     ON ie.hadm_id = ag.hadm_id
   LEFT JOIN surgflag AS sf
     ON ie.stay_id = sf.stay_id
-  LEFT JOIN mimiciv_derived.first_day_gcs AS gcs
+  LEFT JOIN derived.first_day_gcs AS gcs
     ON ie.stay_id = gcs.stay_id
-  LEFT JOIN mimiciv_derived.first_day_vitalsign AS vital
+  LEFT JOIN derived.first_day_vitalsign AS vital
     ON ie.stay_id = vital.stay_id
-  LEFT JOIN mimiciv_derived.first_day_urine_output AS uo
+  LEFT JOIN derived.first_day_urine_output AS uo
     ON ie.stay_id = uo.stay_id
   LEFT JOIN vent
     ON ie.stay_id = vent.stay_id

@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.code_status; CREATE TABLE mimiciv_derived.code_status AS
+DROP TABLE IF EXISTS derived.code_status; CREATE TABLE derived.code_status AS
 WITH t1 AS (
   SELECT
     subject_id,
@@ -10,7 +10,7 @@ WITH t1 AS (
     CASE WHEN value IN ('Comfort measures only') THEN 1 ELSE 0 END AS cmo,
     CASE WHEN value IN ('DNI (do not intubate)', 'DNR / DNI') THEN 1 ELSE 0 END AS dni,
     CASE WHEN value IN ('DNR (do not resuscitate)', 'DNR / DNI') THEN 1 ELSE 0 END AS dnr
-  FROM mimiciv_icu.chartevents
+  FROM icu.chartevents
   WHERE
     itemid IN (223758)
 ), poe AS (
@@ -34,10 +34,10 @@ WITH t1 AS (
       ELSE 0
     END AS dnr,
     CASE WHEN pd.field_value = 'Do not resuscitate (DNR/DNI)' THEN 1 ELSE 0 END AS dni
-  FROM mimiciv_hosp.poe AS p
-  INNER JOIN mimiciv_hosp.poe_detail AS pd
+  FROM hosp.poe AS p
+  INNER JOIN hosp.poe_detail AS pd
     ON p.poe_id = pd.poe_id
-  LEFT JOIN mimiciv_icu.icustays AS ie
+  LEFT JOIN icu.icustays AS ie
     ON p.hadm_id = ie.hadm_id AND p.ordertime >= ie.intime AND p.ordertime <= ie.outtime
   WHERE
     p.order_type = 'General Care' AND order_subtype = 'Code status'

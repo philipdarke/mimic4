@@ -1,12 +1,12 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.weight_durations; CREATE TABLE mimiciv_derived.weight_durations AS
+DROP TABLE IF EXISTS derived.weight_durations; CREATE TABLE derived.weight_durations AS
 WITH wt_stg AS (
   SELECT
     c.stay_id,
     c.charttime,
     CASE WHEN c.itemid = 226512 THEN 'admit' ELSE 'daily' END AS weight_type,
     c.valuenum AS weight
-  FROM mimiciv_icu.chartevents AS c
+  FROM icu.chartevents AS c
   WHERE
     NOT c.valuenum IS NULL AND c.itemid IN (226512, 224639) AND c.valuenum > 0
 ), wt_stg1 AS (
@@ -32,7 +32,7 @@ WITH wt_stg AS (
     END AS starttime,
     wt_stg1.weight
   FROM wt_stg1
-  INNER JOIN mimiciv_icu.icustays AS ie
+  INNER JOIN icu.icustays AS ie
     ON ie.stay_id = wt_stg1.stay_id
 ), wt_stg3 AS (
   SELECT
@@ -66,7 +66,7 @@ WITH wt_stg AS (
     wt.starttime AS endtime,
     wt.weight,
     wt.weight_type
-  FROM mimiciv_icu.icustays AS ie
+  FROM icu.icustays AS ie
   INNER JOIN (
     SELECT
       wt1.stay_id,

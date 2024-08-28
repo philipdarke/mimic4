@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.bg; CREATE TABLE mimiciv_derived.bg AS
+DROP TABLE IF EXISTS derived.bg; CREATE TABLE derived.bg AS
 WITH bg AS (
   SELECT
     MAX(subject_id) AS subject_id,
@@ -44,7 +44,7 @@ WITH bg AS (
     MAX(CASE WHEN itemid = 50824 THEN valuenum ELSE NULL END) AS sodium,
     MAX(CASE WHEN itemid = 50825 THEN valuenum ELSE NULL END) AS temperature,
     MAX(CASE WHEN itemid = 50807 THEN value ELSE NULL END) AS comments
-  FROM mimiciv_hosp.labevents AS le
+  FROM hosp.labevents AS le
   WHERE
     le.itemid IN (52033, 50801, 50802, 50803, 50804, 50805, 50806, 50807, 50808, 50809, 50810, 50811, 50813, 50814, 50815, 50816, 50817, 50818, 50819, 50820, 50821, 50822, 50823, 50824, 50825)
   GROUP BY
@@ -54,7 +54,7 @@ WITH bg AS (
     subject_id,
     charttime,
     AVG(valuenum) AS spo2
-  FROM mimiciv_icu.chartevents
+  FROM icu.chartevents
   WHERE
     itemid = 220277 AND valuenum > 0 AND valuenum <= 100
   GROUP BY
@@ -75,7 +75,7 @@ WITH bg AS (
         ELSE NULL
       END
     ) AS fio2_chartevents
-  FROM mimiciv_icu.chartevents
+  FROM icu.chartevents
   WHERE
     itemid = 223835 AND valuenum > 0 AND valuenum <= 100
   GROUP BY

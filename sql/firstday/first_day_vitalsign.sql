@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.first_day_vitalsign; CREATE TABLE mimiciv_derived.first_day_vitalsign AS
+DROP TABLE IF EXISTS derived.first_day_vitalsign; CREATE TABLE derived.first_day_vitalsign AS
 SELECT
   ie.subject_id,
   ie.stay_id,
@@ -27,8 +27,8 @@ SELECT
   MIN(glucose) AS glucose_min,
   MAX(glucose) AS glucose_max,
   AVG(glucose) AS glucose_mean
-FROM mimiciv_icu.icustays AS ie
-LEFT JOIN mimiciv_derived.vitalsign AS ce
+FROM icu.icustays AS ie
+LEFT JOIN derived.vitalsign AS ce
   ON ie.stay_id = ce.stay_id
   AND ce.charttime >= ie.intime - INTERVAL '6' HOUR
   AND ce.charttime <= ie.intime + INTERVAL '1' DAY

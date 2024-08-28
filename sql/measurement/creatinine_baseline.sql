@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.creatinine_baseline; CREATE TABLE mimiciv_derived.creatinine_baseline AS
+DROP TABLE IF EXISTS derived.creatinine_baseline; CREATE TABLE derived.creatinine_baseline AS
 WITH p AS (
   SELECT
     ag.subject_id,
@@ -11,8 +11,8 @@ WITH p AS (
       THEN POWER(75.0 / 186.0 / POWER(ag.age, -0.203) / 0.742, -1 / 1.154)
       ELSE POWER(75.0 / 186.0 / POWER(ag.age, -0.203), -1 / 1.154)
     END AS mdrd_est
-  FROM mimiciv_derived.age AS ag
-  LEFT JOIN mimiciv_hosp.patients AS p
+  FROM derived.age AS ag
+  LEFT JOIN hosp.patients AS p
     ON ag.subject_id = p.subject_id
   WHERE
     ag.age >= 18
@@ -20,14 +20,14 @@ WITH p AS (
   SELECT
     hadm_id,
     MIN(creatinine) AS scr_min
-  FROM mimiciv_derived.chemistry
+  FROM derived.chemistry
   GROUP BY
     hadm_id
 ), ckd AS (
   SELECT
     hadm_id,
     MAX(1) AS ckd_flag
-  FROM mimiciv_hosp.diagnoses_icd
+  FROM hosp.diagnoses_icd
   WHERE
     (
       SUBSTR(icd_code, 1, 3) = '585' AND icd_version = 9

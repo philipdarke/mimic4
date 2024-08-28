@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.norepinephrine; CREATE TABLE mimiciv_derived.norepinephrine AS
+DROP TABLE IF EXISTS derived.norepinephrine; CREATE TABLE derived.norepinephrine AS
 SELECT
   stay_id,
   linkorderid,
@@ -13,6 +13,6 @@ SELECT
   amount AS vaso_amount,
   starttime,
   endtime
-FROM mimiciv_icu.inputevents
+FROM icu.inputevents
 WHERE
   itemid = 221906

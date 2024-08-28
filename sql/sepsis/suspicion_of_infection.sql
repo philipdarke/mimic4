@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.suspicion_of_infection; CREATE TABLE mimiciv_derived.suspicion_of_infection AS
+DROP TABLE IF EXISTS derived.suspicion_of_infection; CREATE TABLE derived.suspicion_of_infection AS
 WITH ab_tbl AS (
   SELECT
     abx.subject_id,
@@ -10,7 +10,7 @@ WITH ab_tbl AS (
     DATE_TRUNC('DAY', abx.starttime) AS antibiotic_date,
     abx.stoptime AS antibiotic_stoptime,
     ROW_NUMBER() OVER (PARTITION BY subject_id ORDER BY starttime NULLS FIRST, stoptime NULLS FIRST, antibiotic NULLS FIRST) AS ab_id
-  FROM mimiciv_derived.antibiotic AS abx
+  FROM derived.antibiotic AS abx
 ), me AS (
   SELECT
     micro_specimen_id,
@@ -26,7 +26,7 @@ WITH ab_tbl AS (
         ELSE 0
       END
     ) AS positiveculture
-  FROM mimiciv_hosp.microbiologyevents
+  FROM hosp.microbiologyevents
   GROUP BY
     micro_specimen_id
 ), me_then_ab AS (

@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.height; CREATE TABLE mimiciv_derived.height AS
+DROP TABLE IF EXISTS derived.height; CREATE TABLE derived.height AS
 WITH ht_in AS (
   SELECT
     c.subject_id,
@@ -7,7 +7,7 @@ WITH ht_in AS (
     c.charttime,
     ROUND(TRY_CAST(c.valuenum * 2.54 AS DECIMAL), 2) AS height,
     c.valuenum AS height_orig
-  FROM mimiciv_icu.chartevents AS c
+  FROM icu.chartevents AS c
   WHERE
     NOT c.valuenum IS NULL AND c.itemid = 226707
 ), ht_cm AS (
@@ -16,7 +16,7 @@ WITH ht_in AS (
     c.stay_id,
     c.charttime,
     ROUND(TRY_CAST(c.valuenum AS DECIMAL), 2) AS height
-  FROM mimiciv_icu.chartevents AS c
+  FROM icu.chartevents AS c
   WHERE
     NOT c.valuenum IS NULL AND c.itemid = 226730
 ), ht_stg0 AS (

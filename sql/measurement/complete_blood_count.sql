@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.complete_blood_count; CREATE TABLE mimiciv_derived.complete_blood_count AS
+DROP TABLE IF EXISTS derived.complete_blood_count; CREATE TABLE derived.complete_blood_count AS
 SELECT
   MAX(subject_id) AS subject_id,
   MAX(hadm_id) AS hadm_id,
@@ -15,7 +15,7 @@ SELECT
   MAX(CASE WHEN itemid = 51277 THEN valuenum ELSE NULL END) AS rdw,
   MAX(CASE WHEN itemid = 52159 THEN valuenum ELSE NULL END) AS rdwsd,
   MAX(CASE WHEN itemid = 51301 THEN valuenum ELSE NULL END) AS wbc
-FROM mimiciv_hosp.labevents AS le
+FROM hosp.labevents AS le
 WHERE
   le.itemid IN (51221, 51222, 51248, 51249, 51250, 51265, 51279, 51277, 52159, 51301)
   AND NOT valuenum IS NULL

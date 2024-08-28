@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.sofa; CREATE TABLE mimiciv_derived.sofa AS
+DROP TABLE IF EXISTS derived.sofa; CREATE TABLE derived.sofa AS
 WITH co AS (
   SELECT
     ih.stay_id,
@@ -7,8 +7,8 @@ WITH co AS (
     hr,
     ih.endtime - INTERVAL '1' HOUR AS starttime,
     ih.endtime
-  FROM mimiciv_derived.icustay_hourly AS ih
-  INNER JOIN mimiciv_icu.icustays AS ie
+  FROM derived.icustay_hourly AS ih
+  INNER JOIN icu.icustays AS ie
     ON ih.stay_id = ie.stay_id
 ), pafi AS (
   SELECT
@@ -16,10 +16,10 @@ WITH co AS (
     bg.charttime,
     CASE WHEN vd.stay_id IS NULL THEN pao2fio2ratio ELSE NULL END AS pao2fio2ratio_novent,
     CASE WHEN NOT vd.stay_id IS NULL THEN pao2fio2ratio ELSE NULL END AS pao2fio2ratio_vent
-  FROM mimiciv_icu.icustays AS ie
-  INNER JOIN mimiciv_derived.bg AS bg
+  FROM icu.icustays AS ie
+  INNER JOIN derived.bg AS bg
     ON ie.subject_id = bg.subject_id
-  LEFT JOIN mimiciv_derived.ventilation AS vd
+  LEFT JOIN derived.ventilation AS vd
     ON ie.stay_id = vd.stay_id
     AND bg.charttime >= vd.starttime
     AND bg.charttime <= vd.endtime
@@ -32,7 +32,7 @@ WITH co AS (
     co.hr,
     MIN(vs.mbp) AS meanbp_min
   FROM co
-  LEFT JOIN mimiciv_derived.vitalsign AS vs
+  LEFT JOIN derived.vitalsign AS vs
     ON co.stay_id = vs.stay_id
     AND co.starttime < vs.charttime
     AND co.endtime >= vs.charttime
@@ -45,7 +45,7 @@ WITH co AS (
     co.hr,
     MIN(gcs.gcs) AS gcs_min
   FROM co
-  LEFT JOIN mimiciv_derived.gcs AS gcs
+  LEFT JOIN derived.gcs AS gcs
     ON co.stay_id = gcs.stay_id
     AND co.starttime < gcs.charttime
     AND co.endtime >= gcs.charttime
@@ -58,7 +58,7 @@ WITH co AS (
     co.hr,
     MAX(enz.bilirubin_total) AS bilirubin_max
   FROM co
-  LEFT JOIN mimiciv_derived.enzyme AS enz
+  LEFT JOIN derived.enzyme AS enz
     ON co.hadm_id = enz.hadm_id
     AND co.starttime < enz.charttime
     AND co.endtime >= enz.charttime
@@ -71,7 +71,7 @@ WITH co AS (
     co.hr,
     MAX(chem.creatinine) AS creatinine_max
   FROM co
-  LEFT JOIN mimiciv_derived.chemistry AS chem
+  LEFT JOIN derived.chemistry AS chem
     ON co.hadm_id = chem.hadm_id
     AND co.starttime < chem.charttime
     AND co.endtime >= chem.charttime
@@ -84,7 +84,7 @@ WITH co AS (
     co.hr,
     MIN(cbc.platelet) AS platelet_min
   FROM co
-  LEFT JOIN mimiciv_derived.complete_blood_count AS cbc
+  LEFT JOIN derived.complete_blood_count AS cbc
     ON co.hadm_id = cbc.hadm_id
     AND co.starttime < cbc.charttime
     AND co.endtime >= cbc.charttime
@@ -116,7 +116,7 @@ WITH co AS (
       END
     ) AS uo_24hr
   FROM co
-  LEFT JOIN mimiciv_derived.urine_output_rate AS uo
+  LEFT JOIN derived.urine_output_rate AS uo
     ON co.stay_id = uo.stay_id
     AND co.starttime < uo.charttime
     AND co.endtime >= uo.charttime
@@ -132,19 +132,19 @@ WITH co AS (
     MAX(dop.vaso_rate) AS rate_dopamine,
     MAX(dob.vaso_rate) AS rate_dobutamine
   FROM co
-  LEFT JOIN mimiciv_derived.epinephrine AS epi
+  LEFT JOIN derived.epinephrine AS epi
     ON co.stay_id = epi.stay_id
     AND co.endtime > epi.starttime
     AND co.endtime <= epi.endtime
-  LEFT JOIN mimiciv_derived.norepinephrine AS nor
+  LEFT JOIN derived.norepinephrine AS nor
     ON co.stay_id = nor.stay_id
     AND co.endtime > nor.starttime
     AND co.endtime <= nor.endtime
-  LEFT JOIN mimiciv_derived.dopamine AS dop
+  LEFT JOIN derived.dopamine AS dop
     ON co.stay_id = dop.stay_id
     AND co.endtime > dop.starttime
     AND co.endtime <= dop.endtime
-  LEFT JOIN mimiciv_derived.dobutamine AS dob
+  LEFT JOIN derived.dobutamine AS dob
     ON co.stay_id = dob.stay_id
     AND co.endtime > dob.starttime
     AND co.endtime <= dob.endtime

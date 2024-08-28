@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.sirs; CREATE TABLE mimiciv_derived.sirs AS
+DROP TABLE IF EXISTS derived.sirs; CREATE TABLE derived.sirs AS
 WITH scorecomp AS (
   SELECT
     ie.stay_id,
@@ -11,12 +11,12 @@ WITH scorecomp AS (
     l.wbc_min,
     l.wbc_max,
     l.bands_max
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_derived.first_day_bg_art AS bg
+  FROM icu.icustays AS ie
+  LEFT JOIN derived.first_day_bg_art AS bg
     ON ie.stay_id = bg.stay_id
-  LEFT JOIN mimiciv_derived.first_day_vitalsign AS v
+  LEFT JOIN derived.first_day_vitalsign AS v
     ON ie.stay_id = v.stay_id
-  LEFT JOIN mimiciv_derived.first_day_lab AS l
+  LEFT JOIN derived.first_day_lab AS l
     ON ie.stay_id = l.stay_id
 ), scorecalc AS (
   SELECT
@@ -68,6 +68,6 @@ SELECT
   heart_rate_score,
   resp_score,
   wbc_score
-FROM mimiciv_icu.icustays AS ie
+FROM icu.icustays AS ie
 LEFT JOIN scorecalc AS s
   ON ie.stay_id = s.stay_id

@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.vitalsign; CREATE TABLE mimiciv_derived.vitalsign AS
+DROP TABLE IF EXISTS derived.vitalsign; CREATE TABLE derived.vitalsign AS
 SELECT
   ce.subject_id,
   ce.stay_id,
@@ -52,7 +52,7 @@ SELECT
     CASE WHEN itemid IN (220277) AND valuenum > 0 AND valuenum <= 100 THEN valuenum END
   ) AS spo2,
   AVG(CASE WHEN itemid IN (225664, 220621, 226537) AND valuenum > 0 THEN valuenum END) AS glucose
-FROM mimiciv_icu.chartevents AS ce
+FROM icu.chartevents AS ce
 WHERE
   NOT ce.stay_id IS NULL
   AND ce.itemid IN (220045, 225309, 225310, 225312, 220050, 220051, 220052, 220179, 220180, 220181, 220210, 224690, 220277, 225664, 220621, 226537, 223762, 223761, 224642)

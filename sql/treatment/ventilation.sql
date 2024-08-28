@@ -1,15 +1,15 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.ventilation; CREATE TABLE mimiciv_derived.ventilation AS
+DROP TABLE IF EXISTS derived.ventilation; CREATE TABLE derived.ventilation AS
 WITH tm AS (
   SELECT
     stay_id,
     charttime
-  FROM mimiciv_derived.ventilator_setting
+  FROM derived.ventilator_setting
   UNION
   SELECT
     stay_id,
     charttime
-  FROM mimiciv_derived.oxygen_delivery
+  FROM derived.oxygen_delivery
 ), vs AS (
   SELECT
     tm.stay_id,
@@ -35,9 +35,9 @@ WITH tm AS (
       ELSE NULL
     END AS ventilation_status
   FROM tm
-  LEFT JOIN mimiciv_derived.ventilator_setting AS vs
+  LEFT JOIN derived.ventilator_setting AS vs
     ON tm.stay_id = vs.stay_id AND tm.charttime = vs.charttime
-  LEFT JOIN mimiciv_derived.oxygen_delivery AS od
+  LEFT JOIN derived.oxygen_delivery AS od
     ON tm.stay_id = od.stay_id AND tm.charttime = od.charttime
 ), vd0 AS (
   SELECT

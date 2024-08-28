@@ -1,13 +1,13 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.kdigo_creatinine; CREATE TABLE mimiciv_derived.kdigo_creatinine AS
+DROP TABLE IF EXISTS derived.kdigo_creatinine; CREATE TABLE derived.kdigo_creatinine AS
 WITH cr AS (
   SELECT
     ie.hadm_id,
     ie.stay_id,
     le.charttime,
     AVG(le.valuenum) AS creat
-  FROM mimiciv_icu.icustays AS ie
-  LEFT JOIN mimiciv_hosp.labevents AS le
+  FROM icu.icustays AS ie
+  LEFT JOIN hosp.labevents AS le
     ON ie.subject_id = le.subject_id
     AND le.itemid = 50912
     AND NOT le.valuenum IS NULL

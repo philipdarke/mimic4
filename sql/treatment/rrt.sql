@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.rrt; CREATE TABLE mimiciv_derived.rrt AS
+DROP TABLE IF EXISTS derived.rrt; CREATE TABLE derived.rrt AS
 WITH ce AS (
   SELECT
     ce.stay_id,
@@ -29,7 +29,7 @@ WITH ce AS (
       THEN 'IHD'
       ELSE NULL
     END AS dialysis_type
-  FROM mimiciv_icu.chartevents AS ce
+  FROM icu.chartevents AS ce
   WHERE
     ce.itemid IN (226118, 227357, 225725, 226499, 224154, 225810, 227639, 225183, 227438, 224191, 225806, 225807, 228004, 228005, 228006, 224144, 224145, 224149, 224150, 224151, 224152, 224153, 224404, 224406, 226457, 225959, 224135, 224139, 224146, 225323, 225740, 225776, 225951, 225952, 225953, 225954, 225956, 225958, 225961, 225963, 225965, 225976, 225977, 227124, 227290, 227638, 227640, 227753)
     AND NOT ce.value IS NULL
@@ -41,7 +41,7 @@ WITH ce AS (
     1 AS dialysis_present,
     1 AS dialysis_active,
     'CRRT' AS dialysis_type
-  FROM mimiciv_icu.inputevents
+  FROM icu.inputevents
   WHERE
     itemid IN (227536, 227525) AND amount > 0
   UNION
@@ -66,7 +66,7 @@ WITH ce AS (
       THEN 'SCUF'
       ELSE NULL
     END AS dialysis_type
-  FROM mimiciv_icu.procedureevents
+  FROM icu.procedureevents
   WHERE
     itemid IN (225441, 225802, 225803, 225805, 224270, 225809, 225955, 225436)
     AND NOT value IS NULL

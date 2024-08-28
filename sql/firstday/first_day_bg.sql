@@ -1,5 +1,5 @@
 -- THIS SCRIPT IS AUTOMATICALLY GENERATED. DO NOT EDIT IT DIRECTLY.
-DROP TABLE IF EXISTS mimiciv_derived.first_day_bg; CREATE TABLE mimiciv_derived.first_day_bg AS
+DROP TABLE IF EXISTS derived.first_day_bg; CREATE TABLE derived.first_day_bg AS
 SELECT
   ie.subject_id,
   ie.stay_id,
@@ -45,8 +45,8 @@ SELECT
   MAX(potassium) AS potassium_max,
   MIN(sodium) AS sodium_min,
   MAX(sodium) AS sodium_max
-FROM mimiciv_icu.icustays AS ie
-LEFT JOIN mimiciv_derived.bg AS bg
+FROM icu.icustays AS ie
+LEFT JOIN derived.bg AS bg
   ON ie.subject_id = bg.subject_id
   AND bg.charttime >= ie.intime - INTERVAL '6' HOUR
   AND bg.charttime <= ie.intime + INTERVAL '1' DAY

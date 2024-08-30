@@ -1,6 +1,6 @@
 # mimic4
 
-Adds the MIMIC-IV data set (including all current concepts) to a DuckDB database using Python.
+Adds the MIMIC-IV data set (including all concepts in [v2.5.0](https://github.com/MIT-LCP/mimic-code/releases/tag/v2.5.0) of the MIMIC [code repository](https://github.com/MIT-LCP/mimic-code)) to a DuckDB database using Python.
 
 Based on the scripts at https://github.com/MIT-LCP/mimic-code/tree/main/mimic-iv/buildmimic, however note the schema names are not prefaced with `mimiciv_`. No constraints are placed on the tables as the focus is [speed](https://duckdb.org/docs/guides/performance/schema#constraints).
 
@@ -10,17 +10,18 @@ The only Python dependency is [duckdb](https://pypi.org/project/duckdb/). Tested
 
 ## Instructions
 
-Create a Python virtual environment and install DuckDB, for example:
-
-```
-python3 -m .venv venv
-source .venv/bin.activate
-pip install duckdb==1.0.0
-```
-
 Download and save `mimic-iv-3.0.zip` in the `data/` directory.
 
-Run `python3 build_database.py` to build the database. It is named `mimic4.db` by default and should have the SHA-256 checksum `117ae4ca5efa1075a741fb5ac7129250560965402540b699dea723f85aeeca24`.
+To create a Python virtual environment, install DuckDB, then run the script:
+
+```
+python3 -m venv .venv
+source .venv/bin.activate
+pip install duckdb==1.0.0
+python3 build_database.py
+```
+
+The database is called `mimic4.db` by default and should have the SHA-256 checksum `117ae4ca5efa1075a741fb5ac7129250560965402540b699dea723f85aeeca24`.
 
 ## Licence
 

@@ -8,8 +8,8 @@ WITH ab_tbl AS (
     abx.antibiotic,
     abx.starttime AS antibiotic_time,
     DATE_TRUNC('DAY', abx.starttime) AS antibiotic_date,
-    abx.stoptime AS antibiotic_stoptime,
-    ROW_NUMBER() OVER (PARTITION BY subject_id ORDER BY starttime NULLS FIRST, stoptime NULLS FIRST, antibiotic NULLS FIRST) AS ab_id
+    abx.endtime AS antibiotic_stoptime,
+    ROW_NUMBER() OVER (PARTITION BY subject_id ORDER BY starttime NULLS FIRST, endtime NULLS FIRST, antibiotic NULLS FIRST) AS ab_id
   FROM derived.antibiotic AS abx
 ), me AS (
   SELECT

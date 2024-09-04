@@ -53,7 +53,7 @@ SELECT
   pr.hadm_id,
   pr.drug AS nsaid,
   pr.starttime,
-  pr.stoptime
+  pr.stoptime AS endtime
 FROM hosp.prescriptions AS pr
 INNER JOIN nsaid_drug
   ON pr.drug = nsaid_drug.drug

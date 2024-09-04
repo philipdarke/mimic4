@@ -29,7 +29,7 @@ SELECT
   pr.hadm_id,
   pr.drug AS arb,
   pr.starttime,
-  pr.stoptime
+  pr.stoptime AS endtime
 FROM hosp.prescriptions AS pr
 INNER JOIN arb_drug
   ON pr.drug = arb_drug.drug

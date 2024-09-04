@@ -33,7 +33,7 @@ SELECT
   pr.hadm_id,
   pr.drug AS acei,
   pr.starttime,
-  pr.stoptime
+  pr.stoptime AS endtime
 FROM hosp.prescriptions AS pr
 INNER JOIN acei_drug
   ON pr.drug = acei_drug.drug

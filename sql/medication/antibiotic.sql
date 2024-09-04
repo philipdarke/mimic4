@@ -333,7 +333,7 @@ SELECT
   pr.drug AS antibiotic,
   pr.route,
   pr.starttime,
-  pr.stoptime
+  pr.stoptime AS endtime
 FROM hosp.prescriptions AS pr
 INNER JOIN abx
   ON pr.drug = abx.drug AND pr.route = abx.route
